@@ -1,0 +1,9 @@
+# JARVIS Phase 1 Dependencies
+
+# Audio recording
+sounddevice==0.4.6
+numpy>=1.26.0
+
+# Future dependencies (Phase 2+)
+# scikit-learn
+# pydantic
