@@ -1,89 +1,68 @@
-JARVIS — Local-First Hybrid AI Assistant
-1. Product Vision
+# JARVIS — Local-First Hybrid AI Assistant
+
+## 1. Product Vision
 
 JARVIS is a hybrid, local-first desktop voice assistant for Linux.
 
-Primary objectives:
+**Primary objectives:**
 
-Fast (< 1.5 second response time)
+- Fast (< 1.5 second response time)
+- Deterministic execution layer
+- Strict capability-based security model
+- Local speech processing
+- Hybrid reasoning (local + optional cloud)
+- Modular, extensible architecture
+- Built for learning AI/ML deeply
 
-Deterministic execution layer
+**JARVIS must never compromise user data.**
 
-Strict capability-based security model
+## 2. Core Philosophy
 
-Local speech processing
+- Local-first by default
+- Deterministic execution layer (no arbitrary shell execution)
+- AI layer cannot directly execute OS commands
+- All actions go through a capability registry
+- High-risk actions require confirmation
+- No background scanning of emails, files, or data
+- Structured JSON contracts between AI and execution layers
 
-Hybrid reasoning (local + optional cloud)
+## 3. System Architecture
 
-Modular, extensible architecture
+**Three-layer architecture:**
 
-Built for learning AI/ML deeply
+### Interface Layer
 
-JARVIS must never compromise user data.
+- Microphone input
+- Wake word detection
+- Speech-to-text (whisper.cpp)
+- Text-to-speech (Piper)
 
-2. Core Philosophy
+### Intelligence Layer (Python)
 
-Local-first by default
+- Intent classification
+- Slot extraction
+- Confidence scoring
+- Optional local LLM (Phase 2+)
+- SQLite memory store
+- Logging system
 
-Deterministic execution layer (no arbitrary shell execution)
+### Execution Layer
 
-AI layer cannot directly execute OS commands
+- OS automation (xdotool, wmctrl, xdg-open)
+- Browser control
+- File operations
+- Media control (playerctl)
+- No direct shell execution allowed
 
-All actions go through a capability registry
+## 4. Security Model
 
-High-risk actions require confirmation
-
-No background scanning of emails, files, or data
-
-Structured JSON contracts between AI and execution layers
-
-3. System Architecture
-
-Three-layer architecture:
-
-Interface Layer
-
-Microphone input
-
-Wake word detection
-
-Speech-to-text (whisper.cpp)
-
-Text-to-speech (Piper)
-
-Intelligence Layer (Python)
-
-Intent classification
-
-Slot extraction
-
-Confidence scoring
-
-Optional local LLM (Phase 2+)
-
-SQLite memory store
-
-Logging system
-
-Execution Layer
-
-OS automation (xdotool, wmctrl, xdg-open)
-
-Browser control
-
-File operations
-
-Media control (playerctl)
-
-No direct shell execution allowed
-
-4. Security Model
-4.1 Capability Registry
+### 4.1 Capability Registry
 
 All actions must be declared in a registry.
 
-Example:
+**Example:**
 
+```python
 CAPABILITIES = {
     "OPEN_APP": {
         "risk": "low",
@@ -91,160 +70,115 @@ CAPABILITIES = {
         "allowed_apps": ["firefox", "code", "terminal"]
     }
 }
-
+```
 
 No action may execute without being defined here.
 
-4.2 Forbidden Behaviors
+### 4.2 Forbidden Behaviors
 
-Amazon Q must never generate:
+**Amazon Q must never generate:**
 
-Arbitrary shell command execution
+- Arbitrary shell command execution
+- Code using shell=True
+- Remote data exfiltration
+- Background scanning of personal files
+- Auto-sending emails
+- Auto-executing downloaded scripts
 
-Code using shell=True
+### 4.3 Confirmation Gate
 
-Remote data exfiltration
+**High-risk actions must require:**
 
-Background scanning of personal files
+- Voice confirmation
 
-Auto-sending emails
+**OR**
 
-Auto-executing downloaded scripts
+- Manual approval (keyboard)
 
-4.3 Confirmation Gate
+## 5. Development Phases
 
-High-risk actions must require:
+### Phase 0 — Environment Setup
 
-Voice confirmation
-OR
+- Install dependencies
+- Setup whisper.cpp
+- Setup Piper
+- Create project structure
+- Setup SQLite
 
-Manual approval (keyboard)
+### Phase 1 — Core Voice Loop
 
-5. Development Phases
-Phase 0 — Environment Setup
+- Record audio
+- Transcribe
+- Print transcript
+- No wake word yet
 
-Install dependencies
+### Phase 2 — Intent System
 
-Setup whisper.cpp
+- Rule-based classifier
+- ML classifier (TF-IDF + Logistic Regression)
+- Confidence thresholding
 
-Setup Piper
+### Phase 3 — Execution Layer
 
-Create project structure
+- Implement safe controllers
+- Capability enforcement
+- Logging
 
-Setup SQLite
+### Phase 4 — Local LLM Integration
 
-Phase 1 — Core Voice Loop
+- Structured JSON extraction
+- Guardrails
+- Fallback to deterministic intent system
 
-Record audio
+### Phase 5 — Hybrid Cloud Intelligence
 
-Transcribe
+- Optional cloud reasoning
+- Sanitized data only
+- Explicit user approval for sensitive data
 
-Print transcript
+## 6. Performance Targets
 
-No wake word yet
+- STT latency < 700ms
+- Intent classification < 50ms
+- Action execution < 300ms
+- Total < 1.5s
 
-Phase 2 — Intent System
+## 7. Logging & Observability
 
-Rule-based classifier
+**Every action must log:**
 
-ML classifier (TF-IDF + Logistic Regression)
-
-Confidence thresholding
-
-Phase 3 — Execution Layer
-
-Implement safe controllers
-
-Capability enforcement
-
-Logging
-
-Phase 4 — Local LLM Integration
-
-Structured JSON extraction
-
-Guardrails
-
-Fallback to deterministic intent system
-
-Phase 5 — Hybrid Cloud Intelligence
-
-Optional cloud reasoning
-
-Sanitized data only
-
-Explicit user approval for sensitive data
-
-6. Performance Targets
-
-STT latency < 700ms
-
-Intent classification < 50ms
-
-Action execution < 300ms
-
-Total < 1.5s
-
-7. Logging & Observability
-
-Every action must log:
-
-Timestamp
-
-Intent
-
-Confidence
-
-Action taken
-
-Success/failure
+- Timestamp
+- Intent
+- Confidence
+- Action taken
+- Success/failure
 
 Logs stored locally in SQLite.
 
-8. Coding Standards
+## 8. Coding Standards
 
-Python 3.11+
+- Python 3.11+
+- No global state
+- Use dependency injection where possible
+- Strict separation of AI vs execution
+- Type hints required
+- Pydantic models for structured data
+- No magic strings for intents
+- Every module testable independently
 
-No global state
+## 9. Long-Term Goals
 
-Use dependency injection where possible
+- Plugin system
+- RBAC modes (Work Mode, Personal Mode)
+- Context memory
+- Multi-agent architecture
+- GUI using Tauri + React
 
-Strict separation of AI vs execution
+## 10. Prime Directive
 
-Type hints required
+**JARVIS must never:**
 
-Pydantic models for structured data
-
-No magic strings for intents
-
-Every module testable independently
-
-9. Long-Term Goals
-
-Plugin system
-
-RBAC modes (Work Mode, Personal Mode)
-
-Context memory
-
-Multi-agent architecture
-
-GUI using Tauri + React
-
-10. Prime Directive
-
-JARVIS must never:
-
-Execute commands outside the capability registry
-
-Send sensitive data externally without explicit consent
-
-Modify system state without deterministic routing
-
-Become dependent on cloud services for core functionality
-
-END OF DOCUMENT
-
-🧠 Next Step
-
-Now we embed this in
+- Execute commands outside the capability registry
+- Send sensitive data externally without explicit consent
+- Modify system state without deterministic routing
+- Become dependent on cloud services for core functionality
