@@ -50,4 +50,4 @@ fi
 echo "=========================================="
 
 # Cleanup
-# rm -f "$TEST_AUDIO"
+rm -f "$TEST_AUDIO"
