@@ -1,7 +1,8 @@
-"""AI Assistant Phase 1 - Core Voice Loop."""
+"""AI Assistant Phase 2 - Intent Classification."""
 
 import sys
 import os
+import json
 from pathlib import Path
 import tempfile
 
@@ -9,6 +10,7 @@ import tempfile
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from interface import recorder, stt, tts
+from intelligence import classifier
 
 
 def main() -> None:
@@ -65,8 +67,15 @@ def main() -> None:
         print(f"Transcript: {transcript}")
         print()
         
+        # Classify intent
+        intent_result = classifier.classify(transcript)
+        
+        print("Intent Classification:")
+        print(json.dumps(intent_result.model_dump(), indent=2))
+        print()
+        
         # Synthesize response
-        response_text = f"You said: {transcript}"
+        response_text = f"Intent detected: {intent_result.intent.value}"
         tts.synthesize(response_text, piper_bin, piper_voice, output_path)
         
         # Play response
