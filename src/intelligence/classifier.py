@@ -136,6 +136,33 @@ def _score_intent(text: str, words: list, intent: Intent) -> float:
         if words and words[0] in ["play", "stop", "pause"]:
             score += 0.4
     
+    elif intent == Intent.SYSTEM_INFO:
+        # Boost system-related queries
+        if "system" in text or "status" in text:
+            score += 0.4
+        
+        # Boost specific info requests
+        if any(word in text for word in ["cpu", "memory", "disk", "info"]):
+            score += 0.3
+    
+    elif intent == Intent.GREETING:
+        # Boost if starts with greeting
+        if words and words[0] in ["hello", "hi", "hey"]:
+            score += 0.6
+        
+        # Boost short greetings (1-3 words)
+        if len(words) <= 3:
+            score += 0.3
+    
+    elif intent == Intent.EXIT:
+        # Boost exit commands at start
+        if words and words[0] in ["exit", "quit", "goodbye", "bye"]:
+            score += 0.6
+        
+        # Boost if contains "stop" + assistant context
+        if "stop" in text and any(word in text for word in ["listening", "assistant"]):
+            score += 0.3
+    
     return score
 
 

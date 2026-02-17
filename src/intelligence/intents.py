@@ -10,7 +10,7 @@ INTENT_PATTERNS: Dict[Intent, List[str]] = {
         "open", "launch", "start", "run"
     ],
     Intent.CLOSE_APP: [
-        "close", "quit", "exit", "kill"
+        "close", "quit", "exit", "kill", "stop"
     ],
     Intent.SEARCH_WEB: [
         "search", "google", "look up", "find"
@@ -26,6 +26,15 @@ INTENT_PATTERNS: Dict[Intent, List[str]] = {
     ],
     Intent.GET_DATE: [
         "date", "what date", "today", "current date"
+    ],
+    Intent.SYSTEM_INFO: [
+        "system", "info", "status", "cpu", "memory", "disk"
+    ],
+    Intent.GREETING: [
+        "hello", "hi", "hey", "greetings"
+    ],
+    Intent.EXIT: [
+        "exit", "quit", "goodbye", "bye", "stop"
     ],
 }
 

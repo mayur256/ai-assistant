@@ -74,8 +74,18 @@ def main() -> None:
         print(json.dumps(intent_result.model_dump(), indent=2))
         print()
         
-        # Synthesize response
-        response_text = f"Intent detected: {intent_result.intent.value}"
+        # Confidence-based decision logic
+        # < 0.6: Low confidence - ask to repeat
+        # 0.6-0.75: Medium confidence - ask confirmation
+        # >= 0.75: High confidence - execute directly
+        
+        if intent_result.confidence < 0.6:
+            response_text = "I'm not sure what you said. Please repeat."
+        elif intent_result.confidence < 0.75:
+            response_text = f"Did you mean: {intent_result.intent.value}? Please confirm."
+        else:
+            response_text = f"Intent detected: {intent_result.intent.value}"
+        
         tts.synthesize(response_text, piper_bin, piper_voice, output_path)
         
         # Play response

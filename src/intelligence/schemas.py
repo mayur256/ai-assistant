@@ -14,6 +14,9 @@ class Intent(str, Enum):
     STOP_MUSIC = "STOP_MUSIC"
     GET_TIME = "GET_TIME"
     GET_DATE = "GET_DATE"
+    SYSTEM_INFO = "SYSTEM_INFO"
+    GREETING = "GREETING"
+    EXIT = "EXIT"
     UNKNOWN = "UNKNOWN"
 
 
