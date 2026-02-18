@@ -10,7 +10,7 @@ import tempfile
 sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from interface import recorder, stt, tts
-from intelligence import classifier
+from intelligence.hybrid_classifier import classify_hybrid
 from intelligence.policy import setup_logging, decide_action
 
 
@@ -72,11 +72,19 @@ def main() -> None:
         print(f"Transcript: {transcript}")
         print()
         
-        # Classify intent
-        intent_result = classifier.classify(transcript)
+        # Classify intent using hybrid approach
+        # Primary: Rule-based (fast, deterministic)
+        # Fallback: Semantic (handles variations)
+        hybrid_result = classify_hybrid(transcript)
         
-        print("Intent Classification:")
-        print(json.dumps(intent_result.model_dump(), indent=2))
+        intent_result = hybrid_result["intent_result"]
+        
+        print("Hybrid Classification:")
+        print(f"  Rule: {hybrid_result['rule_intent']} (confidence: {hybrid_result['rule_confidence']:.2f})")
+        if hybrid_result['semantic_intent']:
+            print(f"  Semantic: {hybrid_result['semantic_intent']} (similarity: {hybrid_result['semantic_similarity']:.2f})")
+        print(f"  Decision Source: {hybrid_result['decision_source'].upper()}")
+        print(f"  Final Intent: {intent_result.intent.value} (confidence: {intent_result.confidence:.2f})")
         print()
         
         # Policy layer: Decide action based on confidence
