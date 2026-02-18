@@ -11,6 +11,7 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 
 from interface import recorder, stt, tts
 from intelligence import classifier
+from intelligence.policy import setup_logging, decide_action
 
 
 def main() -> None:
@@ -48,6 +49,10 @@ def main() -> None:
     print("=" * 50)
     print()
     
+    # Setup logging
+    log_dir = project_root / "logs"
+    setup_logging(log_dir)
+    
     try:
         # Create temp files
         with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as input_wav:
@@ -74,18 +79,14 @@ def main() -> None:
         print(json.dumps(intent_result.model_dump(), indent=2))
         print()
         
-        # Confidence-based decision logic
-        # < 0.6: Low confidence - ask to repeat
-        # 0.6-0.75: Medium confidence - ask confirmation
-        # >= 0.75: High confidence - execute directly
+        # Policy layer: Decide action based on confidence
+        # This layer enforces safety and confirmation gates
+        response_text, should_execute = decide_action(intent_result)
         
-        if intent_result.confidence < 0.6:
-            response_text = "I'm not sure what you said. Please repeat."
-        elif intent_result.confidence < 0.75:
-            response_text = f"Did you mean: {intent_result.intent.value}? Please confirm."
-        else:
-            response_text = f"Intent detected: {intent_result.intent.value}"
-        
+        print(f"Policy Decision: {'EXECUTE' if should_execute else 'REJECT/CONFIRM'}")
+        print(f"Response: {response_text}")
+        print()
+        # Synthesize and play response
         tts.synthesize(response_text, piper_bin, piper_voice, output_path)
         
         # Play response
