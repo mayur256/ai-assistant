@@ -54,9 +54,9 @@ def get_startup_greeting(assistant_name: str) -> str:
         Personalized startup greeting
     """
     time_greeting = get_time_of_day_greeting()
-    username = get_username()
+    username = "Sir"
     
-    return f"{time_greeting}, {username}. {assistant_name} is ready."
+    return f"{time_greeting}, {username}. {assistant_name} is ready and systems are online."
 
 
 def get_shutdown_message(assistant_name: str) -> str:

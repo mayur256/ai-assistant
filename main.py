@@ -104,7 +104,7 @@ def main() -> None:
             
             try:
                 # Record audio
-                audio_data = recorder.record_audio(duration=3)
+                audio_data = recorder.record_audio(duration=10)
                 recorder.save_wav(audio_data, input_path)
                 
                 # Transcribe
