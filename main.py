@@ -1,8 +1,9 @@
-"""AI Assistant Phase 2 - Intent Classification."""
+"""AI Assistant Phase 4 - Execution Layer Integration."""
 
 import sys
 import os
 import json
+import logging
 from pathlib import Path
 import tempfile
 
@@ -12,6 +13,8 @@ sys.path.insert(0, str(Path(__file__).parent / "src"))
 from interface import recorder, stt, tts
 from intelligence.hybrid_classifier import classify_hybrid
 from intelligence.policy import setup_logging, decide_action
+from core.execution_controller import execute_intent
+from core.capability_registry import validate_capability
 
 
 def main() -> None:
@@ -89,13 +92,64 @@ def main() -> None:
         
         # Policy layer: Decide action based on confidence
         # This layer enforces safety and confirmation gates
+        # Policy returns whether we should proceed to execution
         response_text, should_execute = decide_action(intent_result)
         
         print(f"Policy Decision: {'EXECUTE' if should_execute else 'REJECT/CONFIRM'}")
         print(f"Response: {response_text}")
         print()
+        
+        # ============================================================
+        # SECURITY BOUNDARY: Execution Layer
+        # ============================================================
+        # All actions beyond this point go through:
+        #   1. Capability Registry (validates intent is allowed)
+        #   2. Execution Controller (safe subprocess calls only)
+        #   3. No shell=True, no arbitrary commands, no dynamic execution
+        # ============================================================
+        
+        execution_message = response_text
+        
+        if should_execute:
+            # Validate intent against capability registry
+            # This is the security gate - only pre-approved actions pass
+            if validate_capability(intent_result.intent):
+                print("→ Executing action...")
+                
+                # Execute through safe controller
+                # All subprocess calls use shell=False
+                # All parameters validated against allowed lists
+                exec_result = execute_intent(intent_result)
+                
+                # Log execution result with timestamp
+                if exec_result.success:
+                    logging.info(
+                        f"Execution SUCCESS: {exec_result.intent.value} | "
+                        f"Message: {exec_result.message} | "
+                        f"Timestamp: {exec_result.timestamp}"
+                    )
+                    execution_message = exec_result.message
+                    print(f"✓ Execution successful: {exec_result.message}")
+                else:
+                    logging.error(
+                        f"Execution FAILED: {exec_result.intent.value} | "
+                        f"Message: {exec_result.message} | "
+                        f"Timestamp: {exec_result.timestamp}"
+                    )
+                    execution_message = "I could not complete that action."
+                    print(f"✗ Execution failed: {exec_result.message}")
+            else:
+                # Intent not in capability registry - security block
+                logging.warning(
+                    f"Execution BLOCKED: {intent_result.intent.value} not in capability registry"
+                )
+                execution_message = "I cannot execute that action."
+                print(f"✗ Action blocked: Not in capability registry")
+        
+        print()
+        
         # Synthesize and play response
-        tts.synthesize(response_text, piper_bin, piper_voice, output_path)
+        tts.synthesize(execution_message, piper_bin, piper_voice, output_path)
         
         # Play response
         print("→ Playing response...")
