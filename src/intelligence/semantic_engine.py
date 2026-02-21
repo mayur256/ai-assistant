@@ -89,6 +89,18 @@ CANONICAL_PHRASES: Dict[Intent, List[str]] = {
         "stop listening",
         "bye"
     ],
+    Intent.PLAY_YOUTUBE: [
+        "play despacito on youtube",
+        "youtube play never gonna give you up",
+        "play bohemian rhapsody video",
+        "watch gangnam style on youtube"
+    ],
+    Intent.SEARCH_YOUTUBE: [
+        "search youtube for python tutorials",
+        "find videos about machine learning",
+        "search for cooking videos on youtube",
+        "look up travel vlogs on youtube"
+    ],
 }
 
 

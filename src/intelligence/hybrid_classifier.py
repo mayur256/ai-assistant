@@ -68,7 +68,7 @@ def classify_hybrid(text: str) -> Dict[str, Any]:
     result_data["semantic_similarity"] = semantic_similarity
     
     # Step 4: Check semantic similarity threshold
-    if semantic_similarity >= 0.80:
+    if semantic_similarity >= 0.83:
         # High semantic similarity - override with semantic result
         semantic_result = IntentResult(
             intent=semantic_intent,

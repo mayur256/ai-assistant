@@ -36,6 +36,12 @@ INTENT_PATTERNS: Dict[Intent, List[str]] = {
     Intent.EXIT: [
         "exit", "quit", "goodbye", "bye", "stop"
     ],
+    Intent.PLAY_YOUTUBE: [
+        "play", "youtube", "video"
+    ],
+    Intent.SEARCH_YOUTUBE: [
+        "search", "youtube", "find", "video"
+    ],
 }
 
 

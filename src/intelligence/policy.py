@@ -63,6 +63,12 @@ def get_action_description(intent_result: IntentResult) -> str:
         return "greet you"
     elif intent == Intent.EXIT:
         return "exit"
+    elif intent == Intent.PLAY_YOUTUBE:
+        query = slots.get("query", "a video")
+        return f"play {query} on YouTube"
+    elif intent == Intent.SEARCH_YOUTUBE:
+        query = slots.get("query", "something")
+        return f"search YouTube for {query}"
     else:
         return "do something"
 

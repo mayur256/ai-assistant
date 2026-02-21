@@ -22,6 +22,7 @@ from core.risk import RiskLevel
 ALLOWED_APPS: Dict[str, str] = {
     "firefox": "firefox",
     "chrome": "google-chrome",
+    "brave": "brave-browser",
     "code": "code",
     "terminal": "gnome-terminal",
     "vscode": "code",
@@ -110,6 +111,20 @@ CAPABILITIES: Dict[Intent, Dict[str, Any]] = {
         "risk": RiskLevel.LOW,
         "requires_confirmation": False,
         "description": "Exit assistant",
+        "executable": True,
+    },
+    
+    Intent.PLAY_YOUTUBE: {
+        "risk": RiskLevel.LOW,
+        "requires_confirmation": False,
+        "description": "Play YouTube video",
+        "executable": True,
+    },
+    
+    Intent.SEARCH_YOUTUBE: {
+        "risk": RiskLevel.LOW,
+        "requires_confirmation": False,
+        "description": "Search YouTube",
         "executable": True,
     },
     

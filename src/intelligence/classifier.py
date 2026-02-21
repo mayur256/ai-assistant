@@ -196,4 +196,18 @@ def _extract_slots(text: str, intent: Intent) -> Dict[str, Any]:
         if query:
             slots["query"] = query
     
+    # Extract YouTube query
+    if intent in (Intent.PLAY_YOUTUBE, Intent.SEARCH_YOUTUBE):
+        # Remove trigger words to get clean query
+        query = text
+        trigger_words = [
+            "play", "search", "on youtube", "youtube", "video",
+            "please", "can you", "could you", "find", "for"
+        ]
+        for trigger in trigger_words:
+            query = query.replace(trigger, "")
+        query = query.strip()
+        if query:
+            slots["query"] = query
+    
     return slots

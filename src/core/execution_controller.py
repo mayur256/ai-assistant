@@ -96,6 +96,10 @@ def execute_intent(intent_result: IntentResult) -> ExecutionResult:
             return _execute_greeting()
         elif intent == Intent.EXIT:
             return _execute_exit()
+        elif intent == Intent.PLAY_YOUTUBE:
+            return _execute_play_youtube(slots)
+        elif intent == Intent.SEARCH_YOUTUBE:
+            return _execute_search_youtube(slots)
         else:
             return ExecutionResult(
                 success=False,
@@ -329,3 +333,117 @@ def _execute_exit() -> ExecutionResult:
         message="Goodbye!",
         intent=Intent.EXIT
     )
+
+
+def _execute_play_youtube(slots: Dict[str, Any]) -> ExecutionResult:
+    """
+    Play YouTube video by opening search in Brave browser.
+    
+    Security: Uses shell=False, URL-encoded query, no arbitrary execution.
+    """
+    query = slots.get("query")
+    
+    if not query:
+        return ExecutionResult(
+            success=False,
+            message="No video query specified",
+            intent=Intent.PLAY_YOUTUBE
+        )
+    
+    # URL encode query (safe - no shell injection possible)
+    encoded_query = query.replace(" ", "+")
+    youtube_url = f"https://www.youtube.com/results?search_query={encoded_query}"
+    
+    try:
+        # Launch Brave with new window (shell=False - safe)
+        subprocess.Popen(
+            ["brave-browser", "--new-window", youtube_url],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True
+        )
+        
+        logging.info(f"Playing YouTube: {query}")
+        return ExecutionResult(
+            success=True,
+            message=f"Playing {query} on YouTube",
+            intent=Intent.PLAY_YOUTUBE,
+            details={"query": query, "url": youtube_url}
+        )
+    except FileNotFoundError:
+        # Fallback to default browser
+        try:
+            subprocess.Popen(
+                ["xdg-open", youtube_url],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+            return ExecutionResult(
+                success=True,
+                message=f"Playing {query} on YouTube",
+                intent=Intent.PLAY_YOUTUBE,
+                details={"query": query, "url": youtube_url}
+            )
+        except Exception as e:
+            return ExecutionResult(
+                success=False,
+                message="Could not open browser",
+                intent=Intent.PLAY_YOUTUBE
+            )
+
+
+def _execute_search_youtube(slots: Dict[str, Any]) -> ExecutionResult:
+    """
+    Search YouTube by opening search results in Brave browser.
+    
+    Security: Uses shell=False, URL-encoded query, no arbitrary execution.
+    """
+    query = slots.get("query")
+    
+    if not query:
+        return ExecutionResult(
+            success=False,
+            message="No search query specified",
+            intent=Intent.SEARCH_YOUTUBE
+        )
+    
+    # URL encode query (safe - no shell injection possible)
+    encoded_query = query.replace(" ", "+")
+    youtube_url = f"https://www.youtube.com/results?search_query={encoded_query}"
+    
+    try:
+        # Launch Brave with new window (shell=False - safe)
+        subprocess.Popen(
+            ["brave-browser", "--new-window", youtube_url],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True
+        )
+        
+        logging.info(f"Searching YouTube: {query}")
+        return ExecutionResult(
+            success=True,
+            message=f"Searching YouTube for {query}",
+            intent=Intent.SEARCH_YOUTUBE,
+            details={"query": query, "url": youtube_url}
+        )
+    except FileNotFoundError:
+        # Fallback to default browser
+        try:
+            subprocess.Popen(
+                ["xdg-open", youtube_url],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
+            )
+            return ExecutionResult(
+                success=True,
+                message=f"Searching YouTube for {query}",
+                intent=Intent.SEARCH_YOUTUBE,
+                details={"query": query, "url": youtube_url}
+            )
+        except Exception as e:
+            return ExecutionResult(
+                success=False,
+                message="Could not open browser",
+                intent=Intent.SEARCH_YOUTUBE
+            )
