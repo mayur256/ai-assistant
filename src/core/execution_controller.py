@@ -82,8 +82,6 @@ def execute_intent(intent_result: IntentResult) -> ExecutionResult:
             return _execute_close_app(slots)
         elif intent == Intent.SEARCH_WEB:
             return _execute_search_web(slots)
-        elif intent == Intent.PLAY_MUSIC:
-            return _execute_play_music(slots)
         elif intent == Intent.STOP_MUSIC:
             return _execute_stop_music(slots)
         elif intent == Intent.GET_TIME:
@@ -231,23 +229,6 @@ def _execute_search_web(slots: Dict[str, Any]) -> ExecutionResult:
             success=False,
             message=f"Search failed: {e}",
             intent=Intent.SEARCH_WEB
-        )
-
-
-def _execute_play_music(slots: Dict[str, Any]) -> ExecutionResult:
-    """Play music using playerctl."""
-    try:
-        subprocess.run(["playerctl", "play"], timeout=5, check=True)
-        return ExecutionResult(
-            success=True,
-            message="Playing music",
-            intent=Intent.PLAY_MUSIC
-        )
-    except Exception:
-        return ExecutionResult(
-            success=False,
-            message="No media player found",
-            intent=Intent.PLAY_MUSIC
         )
 
 

@@ -65,13 +65,6 @@ CAPABILITIES: Dict[Intent, Dict[str, Any]] = {
         "executable": True,
     },
     
-    Intent.PLAY_MUSIC: {
-        "risk": RiskLevel.MEDIUM,
-        "requires_confirmation": False,
-        "description": "Play music",
-        "executable": True,
-    },
-    
     Intent.STOP_MUSIC: {
         "risk": RiskLevel.LOW,
         "requires_confirmation": False,

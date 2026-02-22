@@ -46,12 +46,6 @@ CANONICAL_PHRASES: Dict[Intent, List[str]] = {
         "look up weather forecast",
         "find information about linux"
     ],
-    Intent.PLAY_MUSIC: [
-        "play some music",
-        "start playing songs",
-        "play my playlist",
-        "turn on music"
-    ],
     Intent.STOP_MUSIC: [
         "stop the music",
         "pause playback",
@@ -93,7 +87,15 @@ CANONICAL_PHRASES: Dict[Intent, List[str]] = {
         "play despacito on youtube",
         "youtube play never gonna give you up",
         "play bohemian rhapsody video",
-        "watch gangnam style on youtube"
+        "watch gangnam style on youtube",
+        "play a song",
+        "play music",
+        "play believer by imagine dragons",
+        "start a song",
+        "put on music",
+        "play a video",
+        "search youtube and play",
+        "play song on youtube"
     ],
     Intent.SEARCH_YOUTUBE: [
         "search youtube for python tutorials",

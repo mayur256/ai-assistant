@@ -131,10 +131,23 @@ def _score_intent(text: str, words: list, intent: Intent) -> float:
         if "is" in text:
             score += 0.2
     
-    elif intent in [Intent.PLAY_MUSIC, Intent.STOP_MUSIC]:
+    elif intent in [Intent.STOP_MUSIC]:
         # Boost direct commands
-        if words and words[0] in ["play", "stop", "pause"]:
+        if words and words[0] in ["stop", "pause"]:
             score += 0.4
+    
+    elif intent == Intent.PLAY_YOUTUBE:
+        # Boost if starts with play/start/put on
+        if words and words[0] in ["play", "start", "put"]:
+            score += 0.6
+        
+        # Boost if has enough content (2+ additional tokens)
+        if len(words) >= 3:
+            score += 0.3
+        
+        # Boost if contains "by" (artist indicator)
+        if "by" in text:
+            score += 0.2
     
     elif intent == Intent.SYSTEM_INFO:
         # Boost system-related queries
@@ -201,8 +214,8 @@ def _extract_slots(text: str, intent: Intent) -> Dict[str, Any]:
         # Remove trigger words to get clean query
         query = text
         trigger_words = [
-            "play", "search", "on youtube", "youtube", "video",
-            "please", "can you", "could you", "find", "for"
+            "play", "start", "put on", "search", "on youtube", "youtube", 
+            "video", "please", "can you", "could you", "find", "for", "a"
         ]
         for trigger in trigger_words:
             query = query.replace(trigger, "")

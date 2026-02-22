@@ -49,8 +49,6 @@ def get_action_description(intent_result: IntentResult) -> str:
     elif intent == Intent.SEARCH_WEB:
         query = slots.get("query", "something")
         return f"search for {query}"
-    elif intent == Intent.PLAY_MUSIC:
-        return "play music"
     elif intent == Intent.STOP_MUSIC:
         return "stop music"
     elif intent == Intent.GET_TIME:

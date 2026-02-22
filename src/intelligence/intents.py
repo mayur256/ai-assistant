@@ -15,9 +15,6 @@ INTENT_PATTERNS: Dict[Intent, List[str]] = {
     Intent.SEARCH_WEB: [
         "search", "google", "look up", "find"
     ],
-    Intent.PLAY_MUSIC: [
-        "play", "music", "song", "audio"
-    ],
     Intent.STOP_MUSIC: [
         "stop", "pause", "halt"
     ],
@@ -37,7 +34,7 @@ INTENT_PATTERNS: Dict[Intent, List[str]] = {
         "exit", "quit", "goodbye", "bye", "stop"
     ],
     Intent.PLAY_YOUTUBE: [
-        "play", "youtube", "video"
+        "play", "youtube", "video", "song", "music"
     ],
     Intent.SEARCH_YOUTUBE: [
         "search", "youtube", "find", "video"

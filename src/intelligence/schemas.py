@@ -10,7 +10,6 @@ class Intent(str, Enum):
     OPEN_APP = "OPEN_APP"
     CLOSE_APP = "CLOSE_APP"
     SEARCH_WEB = "SEARCH_WEB"
-    PLAY_MUSIC = "PLAY_MUSIC"
     STOP_MUSIC = "STOP_MUSIC"
     GET_TIME = "GET_TIME"
     GET_DATE = "GET_DATE"
